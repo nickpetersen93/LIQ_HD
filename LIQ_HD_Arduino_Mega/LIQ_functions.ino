@@ -226,7 +226,7 @@ void auto_calibration()
     now = rtc.now();
     if (auto_cal_flag && now.hour() == auto_cal_time && temp_cal_timer > temp_cal_time) {
       auto_cal_flag = !auto_cal_flag;
-      cap.begin(0x5C); cap2.begin(0x5B); cap3.begin(0x5C);
+      cap.begin(0x5A); cap2.begin(0x5B); cap3.begin(0x5C);
       cap.setThresholds(touch_threshold, release_threshold);
       cap2.setThresholds(touch_threshold, release_threshold);
       cap3.setThresholds(touch_threshold, release_threshold);
