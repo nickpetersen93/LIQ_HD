@@ -221,16 +221,18 @@ void set_defaults()
 void auto_calibration()
 {
   if (auto_cal) {
+    unsigned long temp_cal_time = 1000 * auto_cal_sec_since_last_lick;
+    unsigned long temp_cal_timer = millis() - cal_timer;
     now = rtc.now();
-    if (now.hour() == auto_cal_time && millis() - cal_timer > 1000 * auto_cal_sec_since_last_lick && auto_cal_flag) {
-      auto_cal_flag = false;
+    if (auto_cal_flag && now.hour() == auto_cal_time && temp_cal_timer > temp_cal_time) {
+      auto_cal_flag = !auto_cal_flag;
       cap.begin(0x5C); cap2.begin(0x5B); cap3.begin(0x5C);
       cap.setThresholds(touch_threshold, release_threshold);
       cap2.setThresholds(touch_threshold, release_threshold);
       cap3.setThresholds(touch_threshold, release_threshold);
     }
     if (now.hour() != auto_cal_time) {
-      auto_cal_flag = true;
+      auto_cal_flag = !auto_cal_flag;
     }
   }
 }
