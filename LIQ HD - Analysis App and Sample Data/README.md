@@ -9,5 +9,5 @@
   - Sample LIQ HD Data
     - "LIQ_HD_Sample_Data_Water.CSV" contains data from 16 cages of water two-bottle choice for 1 week. Cages 17 & 18 are empty.
     - "LIQ_HD_Sample_Data_EtOH_Sucrose.CSV" contains data from 8 cages of ethanol two-bottle choice (Cages 1 to 8 - 7% EtOH versus water), and 8 cages of sucrose two-bottle choice (Cages 9 to 16 - 1% Sucrose versus water) for 1 week. Cages 17 & 18 are empty.
-  - A How-To Guide can be found on the [Wiki page](https://github.com/nickpetersen93/LIQ_HD/wiki/LIQ-HD---Step-by-Step-Tutorial "LIQ HD - Step-by-Step Tutorial") (Coming soon!)
+  - A How-To Guide can be found on the [Wiki page](https://github.com/nickpetersen93/LIQ_HD/wiki/LIQ-HD-Analysis-App-Guide) (Coming soon!)
   
