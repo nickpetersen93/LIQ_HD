@@ -2,7 +2,7 @@
 
 ## Included in this repository:
   - Arduino code for LIQ HD running off an Arduino Mega
-  - Arduino code for LIQ HD running off an Adafruit Grand Central (significantly faster processor speed)
+  - Arduino code for LIQ HD running off an Adafruit Grand Central (significantly faster processor speed. NOT FULLY TESTED.)
   - 3D models for all required 3D-printed components in various file formats (STL, STEP, SHAPR)
   - Step-by-step build instructions and video tutorial can be found on the [Wiki page](https://github.com/nickpetersen93/LIQ_HD/wiki/LIQ-HD---Step-by-Step-Tutorial "LIQ HD - Step-by-Step Tutorial")
   
