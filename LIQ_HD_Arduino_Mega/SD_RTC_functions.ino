@@ -67,12 +67,11 @@ void make_file()
   nowloggingto();
   logfile.flush();
 
-  if (!logfile.println()) {
+  // Write headers to file
+  if (!logfile.print(F("Experimental_side,millis,datetime,"))) {
     error(F("Could not write file"));
   }
 
-  // Write headers to file
-  logfile.print(F("Experimental_side,millis,datetime,"));
   if (log_LN) {
     for (int i = 1; i <= 36; i++) {
       logfile.print("LickNumber");
