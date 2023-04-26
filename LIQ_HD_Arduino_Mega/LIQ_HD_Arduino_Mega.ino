@@ -169,5 +169,7 @@ void loop() {
   SD_error_page();
 
   settings_page();
+  
+  error_page();
 
 }
