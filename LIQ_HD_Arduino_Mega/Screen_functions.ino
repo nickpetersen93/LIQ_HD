@@ -184,8 +184,9 @@ void error(String str)
   tft.setTextWrap(true);
   tft.setFont(&FreeSans9pt7b);
   NickText(str, 5, 50, 1);
-  wait(1000);
-  display_page = "SDerror";
+  Button_center(120, 250, 220, 60, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "Return to Main Menu", 1);
+  display_page = "error";
+  refresh_page = true;
 }
 
 //======================================================================================
