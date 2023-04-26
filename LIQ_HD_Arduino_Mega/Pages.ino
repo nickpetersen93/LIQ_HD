@@ -956,3 +956,38 @@ void settings_page()
     }
   }
 }
+
+//======================================================================================
+
+void error_page()
+{
+  while (display_page == "error") {
+
+    display_time();
+    set_brightness();
+
+    if (refresh_page) {
+      refresh_page = !refresh_page;
+    }
+
+    if (ts.touched()) {
+      TS_Point p = ts.getPoint();
+
+      p.x = map(p.x, 0, 240, 0, 240);
+      p.y = map(p.y, 0, 320, 0, 320);
+
+      DEBUG_PRINT("(X = "); DEBUG_PRINT(p.x);
+      DEBUG_PRINT(", Y = "); DEBUG_PRINT(p.y);
+      DEBUG_PRINT(", Pressure = "); DEBUG_PRINT(p.z);
+      DEBUG_PRINTLN(")");
+
+      if (p.x > 10 && p.x < 230 && p.y > 190 && p.y < 250) { //Return to Main Menu button coordiantes // fix this
+        p = {}; //debounce touchscreen
+        Button_center(120, 250, 220, 60, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "Return to Main Menu", 1);
+        wait(100);
+        display_page = "main"; // go to main_menu_page
+        refresh_page = true;
+      }
+    }
+  }
+}
