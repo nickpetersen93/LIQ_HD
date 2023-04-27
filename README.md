@@ -18,7 +18,7 @@
   
 ------------------------------------------------------------------
 
-### Publication Link: https://www.biorxiv.org/content/10.1101/2022.12.16.520661v1
+### Publication Link: https://www.eneuro.org/content/10/4/ENEURO.0506-22.2023
 
 
 ## Abstract
