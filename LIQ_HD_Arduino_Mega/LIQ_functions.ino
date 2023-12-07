@@ -160,16 +160,15 @@ void Record_Licks()
 
 //======================================================================================
 
-void update_sippers()
-{
+void update_sippers() {
   for (int k = 0; k < 36; k++) {
     if (licking[k]) {
       Elapsedtime[k] = millis() - time_now[k];
       LickDuration[k] = LickDuration[k] + Elapsedtime[k];
-      if (in_bout[k]) {
-        BoutDuration[k] = BoutDuration[k] + (millis() - bout_start_timer[k]);
-        BoutLickDuration[k] = BoutLickDuration[k] + Elapsedtime[k];
-      }
+    }
+    if (in_bout[k]) {
+      BoutDuration[k] = BoutDuration[k] + (millis() - bout_start_timer[k]);
+      BoutLickDuration[k] = BoutLickDuration[k] + Elapsedtime[k];
     }
   }
 }
