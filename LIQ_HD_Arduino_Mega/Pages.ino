@@ -1,13 +1,12 @@
 //240x320 pixel screen
 
-void main_menu_page()
-{
-  while (display_page == "main") { //show main menu screen
+void main_menu_page() {
+  while (display_page == "main") {  //show main menu screen
 
-    set_brightness(); // set screen brightness depending on light cycle
-    display_time(); //display date and time in corner, refresh every minute
+    set_brightness();  // set screen brightness depending on light cycle
+    display_time();    //display date and time in corner, refresh every minute
 
-    if (refresh_page) { //do this only once every time main menu is opened
+    if (refresh_page) {  //do this only once every time main menu is opened
       refresh_page = !refresh_page;
       reset_total_LN();
       timeouts = 0;
@@ -21,9 +20,9 @@ void main_menu_page()
       Button_center(60, 150, 80, 40, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "LEFT", 1);
       Button_center(180, 150, 80, 40, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "RIGHT", 1);
       tft.setFont(&FreeSansBold12pt7b);
-      Button_center(120, 220, 140, 60, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "START!", 1); //"Start recording" button --> go to recording_page (display_page = 2)
+      Button_center(120, 220, 140, 60, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "START!", 1);  //"Start recording" button --> go to recording_page (display_page = 2)
 
-      tft.setFont(&FreeSans9pt7b); //Experimental Side --> left or right?
+      tft.setFont(&FreeSans9pt7b);  //Experimental Side --> left or right?
       if (E_side == "LEFT") {
         Button_center(60, 150, 80, 40, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "LEFT", 1);
       }
@@ -32,7 +31,7 @@ void main_menu_page()
         Button_center(180, 150, 80, 40, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "RIGHT", 1);
       }
 
-      if (!SD.begin(chipSelect)) { //Info if SD card is instered, if not, --> display button to mount SD card to insert and retest
+      if (!SD.begin(chipSelect)) {  //Info if SD card is instered, if not, --> display button to mount SD card to insert and retest
         NickText(F("SD Card failed..."), 10, 295, 1);
         DEBUG_PRINTLN("SD Card failed to initialize");
         eject_button = false;
@@ -53,51 +52,55 @@ void main_menu_page()
       p.x = map(p.x, 0, 240, 0, 240);
       p.y = map(p.y, 0, 320, 0, 320);
 
-      DEBUG_PRINT("(X = "); DEBUG_PRINT(p.x);
-      DEBUG_PRINT(", Y = "); DEBUG_PRINT(p.y);
-      DEBUG_PRINT(", Pressure = "); DEBUG_PRINT(p.z);
+      DEBUG_PRINT("(X = ");
+      DEBUG_PRINT(p.x);
+      DEBUG_PRINT(", Y = ");
+      DEBUG_PRINT(p.y);
+      DEBUG_PRINT(", Pressure = ");
+      DEBUG_PRINT(p.z);
       DEBUG_PRINTLN(")");
 
       tft.setFont(&FreeSans9pt7b);
 
-      if (p.x > 50 && p.x < 190 && p.y > 190 && p.y < 250) { //Start button coordiantes
-        p = {}; //debounce touchscreen
+      if (p.x > 50 && p.x < 190 && p.y > 190 && p.y < 250) {  //Start button coordiantes
+        p = {};                                               //debounce touchscreen
         tft.drawRoundRect(50, 190, 140, 60, 4, ILI9341_GREEN);
         reset_variables();
+        startmillis = millis();
         if (!SD.begin(chipSelect)) {  //test SD card
           tft.fillRect(0, 20, 240, 320, ILI9341_RED);
           NickText(F("SD Card failed or not inserted"), 2, 100, 1);
           wait(500);
           refresh_page = true;
-        }
-        else {
+        } else {
           wait(500);
-          make_file(); // generate filename to save spreadsheet
-          display_page = "recording"; // go to recording_page
+          if (log_by_time) { make_file(); }          // generate filename to save spreadsheet
+          if (log_by_bout) { make_file_by_bout(); }  // generate filename to save spreadsheet
+          display_page = "recording";                // go to recording_page
           refresh_page = true;
         }
       }
 
-      if (p.x > 20 && p.x < 100 && p.y > 130 && p.y < 170) { //Experimental LEFT button coordiantes
-        p = {}; //debounce touchscreen
-        E_side = "LEFT"; // Change Experimental side for spreadsheet
-        tft.drawRoundRect(20, 130, 80, 40, 4, ILI9341_GREEN);// highlight with green border
-        tft.drawRoundRect(140, 130, 80, 40, 4, ILI9341_BLACK);// unhighlight other button
+      if (p.x > 20 && p.x < 100 && p.y > 130 && p.y < 170) {    //Experimental LEFT button coordiantes
+        p = {};                                                 //debounce touchscreen
+        E_side = "LEFT";                                        // Change Experimental side for spreadsheet
+        tft.drawRoundRect(20, 130, 80, 40, 4, ILI9341_GREEN);   // highlight with green border
+        tft.drawRoundRect(140, 130, 80, 40, 4, ILI9341_BLACK);  // unhighlight other button
         wait(100);
       }
 
-      if (p.x > 140 && p.x < 220 && p.y > 130 && p.y < 170) { //Experimental RIGHT button coordiantes
-        p = {}; //debounce touchscreen
-        E_side = "RIGHT"; // Change Experimental side for spreadsheet
-        tft.drawRoundRect(20, 130, 80, 40, 4, ILI9341_BLACK);// highlight with green border
-        tft.drawRoundRect(140, 130, 80, 40, 4, ILI9341_GREEN);// unhighlight other button
+      if (p.x > 140 && p.x < 220 && p.y > 130 && p.y < 170) {   //Experimental RIGHT button coordiantes
+        p = {};                                                 //debounce touchscreen
+        E_side = "RIGHT";                                       // Change Experimental side for spreadsheet
+        tft.drawRoundRect(20, 130, 80, 40, 4, ILI9341_BLACK);   // highlight with green border
+        tft.drawRoundRect(140, 130, 80, 40, 4, ILI9341_GREEN);  // unhighlight other button
         wait(100);
       }
 
-      if (p.x > 145 && p.x < 235 && p.y > 275 && p.y < 305 && eject_button) { //Eject Button button coordiantes
-        p = {}; //debounce touchscreen
+      if (p.x > 145 && p.x < 235 && p.y > 275 && p.y < 305 && eject_button) {  //Eject Button button coordiantes
+        p = {};                                                                //debounce touchscreen
         tft.drawRoundRect(145, 275, 90, 30, 4, ILI9341_GREEN);
-        SD.end(); // Eject SD card
+        SD.end();  // Eject SD card
         tft.fillRect(0, 270, 140, 30, ILI9341_RED);
         eject_button = false;
         wait(1000);
@@ -105,25 +108,24 @@ void main_menu_page()
         Button_center(190, 290, 90, 30, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "Mount SD", 1);
       }
 
-      if (p.x > 145 && p.x < 235 && p.y > 275 && p.y < 305 && !eject_button) { //Mount Button button coordiantes
-        p = {}; //debounce touchscreen
+      if (p.x > 145 && p.x < 235 && p.y > 275 && p.y < 305 && !eject_button) {  //Mount Button button coordiantes
+        p = {};                                                                 //debounce touchscreen
         tft.drawRoundRect(145, 275, 90, 30, 4, ILI9341_GREEN);
         tft.fillRect(0, 270, 140, 30, ILI9341_RED);
         wait(1000);
-        if (!SD.begin(chipSelect)) { //Info if SD card is instered, if not, --> display button to mount SD card to insert and retest
+        if (!SD.begin(chipSelect)) {  //Info if SD card is instered, if not, --> display button to mount SD card to insert and retest
           NickText(F("SD Card failed..."), 10, 295, 1);
           eject_button = false;
           Button_center(190, 290, 90, 30, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "Mount SD", 1);
-        }
-        else {
+        } else {
           NickText(F("SD card ready!"), 15, 295, 1);
           eject_button = true;
           Button_center(190, 290, 90, 30, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "Eject SD", 1);
         }
       }
 
-      if (p.x > 0 && p.x < 42 && p.y > 20 && p.y < 70) { //Settings button button coordiantes
-        p = {}; //debounce touchscreen
+      if (p.x > 0 && p.x < 42 && p.y > 20 && p.y < 70) {  //Settings button button coordiantes
+        p = {};                                           //debounce touchscreen
         drawBitmap(8, 28, settings_icon, 32, 32, ILI9341_GREEN);
         wait(500);
         display_page = "settings";
@@ -135,21 +137,27 @@ void main_menu_page()
 
 //======================================================================================
 
-void recording_page()
-{
+void recording_page() {
   while (display_page == "recording") {
 
-    if (refresh_page) { //do this only once every time coming to recording page
+    if (refresh_page) {  //do this only once every time coming to recording page
       refresh_page = !refresh_page;
+      recording = true;
+
       if (!cap.begin(0x5A)) {
         error("MPR121 #1 not found, check wiring?");
         while (!cap.begin(0x5A)) {
           resetWire();
           if (ts.touched()) {
-            TS_Point p = ts.getPoint(); wait(100);
-            p.x = map(p.x, 0, 240, 0, 240); p.y = map(p.y, 0, 320, 0, 320);
+            TS_Point p = ts.getPoint();
+            wait(100);
+            p.x = map(p.x, 0, 240, 0, 240);
+            p.y = map(p.y, 0, 320, 0, 320);
             if (p.x > 10 && p.x < 230 && p.y > 220 && p.y < 280) {
-              p = {}; display_page = "main"; refresh_page = true; break;
+              p = {};
+              display_page = "main";
+              refresh_page = true;
+              break;
             }
           }
         }
@@ -159,10 +167,15 @@ void recording_page()
         while (!cap2.begin(0x5B)) {
           resetWire();
           if (ts.touched()) {
-            TS_Point p = ts.getPoint(); wait(100);
-            p.x = map(p.x, 0, 240, 0, 240); p.y = map(p.y, 0, 320, 0, 320);
+            TS_Point p = ts.getPoint();
+            wait(100);
+            p.x = map(p.x, 0, 240, 0, 240);
+            p.y = map(p.y, 0, 320, 0, 320);
             if (p.x > 10 && p.x < 230 && p.y > 220 && p.y < 280) {
-              p = {}; display_page = "main"; refresh_page = true; break;
+              p = {};
+              display_page = "main";
+              refresh_page = true;
+              break;
             }
           }
         }
@@ -172,32 +185,34 @@ void recording_page()
         while (!cap3.begin(0x5C)) {
           resetWire();
           if (ts.touched()) {
-            TS_Point p = ts.getPoint(); wait(100);
-            p.x = map(p.x, 0, 240, 0, 240); p.y = map(p.y, 0, 320, 0, 320);
+            TS_Point p = ts.getPoint();
+            wait(100);
+            p.x = map(p.x, 0, 240, 0, 240);
+            p.y = map(p.y, 0, 320, 0, 320);
             if (p.x > 10 && p.x < 230 && p.y > 220 && p.y < 280) {
-              p = {}; display_page = "main"; refresh_page = true; break;
+              p = {};
+              display_page = "main";
+              refresh_page = true;
+              break;
             }
           }
         }
       }
 
       if (cap.begin(0x5A) && cap2.begin(0x5B) && cap3.begin(0x5C)) {
-        display_licks(); //display lick information
+        set_sensor_settings();  //Uncomment for new settings! Make sure to change touch and release thresholds
+        display_licks();        //display lick information
         tft.setFont();
-        NickText(filename, 165, 306, 1); //show what file is being recorded to (filename)
+        NickText(filename, 165, 306, 1);  //show what file is being recorded to (filename)
 
         tft.setFont(&FreeSans9pt7b);
         NickText("Exp. on ", 2, 315, 1);
-        tft.print(E_side); //Show what side experimental liquid is on
+        tft.print(E_side);  //Show what side experimental liquid is on
 
         Button_center(57, 280, 90, 40, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "PAUSE", 1);
         Button_center(170, 280, 120, 40, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "Save & Quit", 1);
 
-        cap.setThresholds(touch_threshold, release_threshold); //set sensitivity of touch and release of capacitive sensors
-        cap2.setThresholds(touch_threshold, release_threshold);
-        cap3.setThresholds(touch_threshold, release_threshold);
-      }
-      else {
+      } else {
         show_time = true;
         break;
       }
@@ -209,16 +224,16 @@ void recording_page()
     prev_min = now.minute();
     currentMillis = millis();
     previousMillis = currentMillis;
-    reset_variables(); //Reset lick variables and timer
+    if (log_by_time) { reset_variables(); }  //Reset lick variables and timer
 
     //==========================================================================================
     while (LOG_COUNTER < (prev_min + LOG_INTERVAL)) {
-      set_brightness(); //set screen brightness depending on light cycle
+      set_brightness();  //set screen brightness depending on light cycle
       display_time();
       auto_calibration();
       currentMillis = millis();
 
-      if (Wire.getWireTimeoutFlag()) { //if the I2C timesout, rescue the sensors and rtc to continue
+      if (Wire.getWireTimeoutFlag()) {  //if the I2C timesout, rescue the sensors and rtc to continue
         refresh_page = true;
         Wire.clearWireTimeoutFlag();
         timeouts += 1;
@@ -234,12 +249,7 @@ void recording_page()
         break;
       }
 
-      if (!SD.begin(chipSelect)) { //test if SD is working, bring to error page if not
-        display_page = "SDerror";
-        break;
-      }
-
-      Record_Licks(); //record licks from MPR121 sensor #1, 2, & 3
+      Record_Licks();  //record licks from MPR121 sensor #1, 2, & 3
 
       if (ts.touched()) {
         TS_Point p = ts.getPoint();
@@ -247,40 +257,43 @@ void recording_page()
         p.x = map(p.x, 0, 240, 0, 240);
         p.y = map(p.y, 0, 320, 0, 320);
 
-        DEBUG_PRINT("(X = "); DEBUG_PRINT(p.x);
-        DEBUG_PRINT(", Y = "); DEBUG_PRINT(p.y);
-        DEBUG_PRINT(", Pressure = "); DEBUG_PRINT(p.z);
+        DEBUG_PRINT("(X = ");
+        DEBUG_PRINT(p.x);
+        DEBUG_PRINT(", Y = ");
+        DEBUG_PRINT(p.y);
+        DEBUG_PRINT(", Pressure = ");
+        DEBUG_PRINT(p.z);
         DEBUG_PRINTLN(")");
 
         tft.setFont(&FreeSans9pt7b);
-        if (p.x > 12 && p.x < 102 && p.y > 260 && p.y < 300) { //PAUSE button coordiantes --> write leftover data to card and eject so you can safely remove SD card --> go to pause_page (display_page = "pause")
-          p = {}; //debounce touchscreen
+        if (p.x > 12 && p.x < 102 && p.y > 260 && p.y < 300) {  //PAUSE button coordiantes --> write leftover data to card and eject so you can safely remove SD card --> go to pause_page (display_page = "pause")
+          p = {};                                               //debounce touchscreen
           Button_center(57, 280, 90, 40, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "PAUSE", 1);
           logfile.flush();
           DEBUG_PRINT("Writing data to SD card!");
           logfile.close();
           SD.end();
-          display_page = "pause"; // go to pause_page
+          display_page = "pause";  // go to pause_page
           refresh_page = true;
           wait(100);
           break;
         }
 
-        if (p.x > 110 && p.x < 230 && p.y > 260 && p.y < 300) { //Save & Quit button coordiantes --> write leftover data to card --> return to main_menu_page (display_page = "main")
-          p = {}; //debounce touchscreen
-          Button_center(170, 280, 120, 40, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "Save & Quit", 1);// highlight with green border
+        if (p.x > 110 && p.x < 230 && p.y > 260 && p.y < 300) {                                             //Save & Quit button coordiantes --> write leftover data to card --> return to main_menu_page (display_page = "main")
+          p = {};                                                                                           //debounce touchscreen
+          Button_center(170, 280, 120, 40, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "Save & Quit", 1);  // highlight with green border
           logfile.flush();
           DEBUG_PRINT("Writing data to SD card!");
           logfile.close();
           SD.end();
-          display_page = "main"; //go to main_menu_page
+          display_page = "main";  //go to main_menu_page
           refresh_page = true;
           wait(100);
           break;
         }
 
-        if (p.x > 193 && p.x < 238 && p.y > 46 && p.y < 66) { //refresh button coordiantes
-          p = {}; //debounce touchscreen
+        if (p.x > 193 && p.x < 238 && p.y > 46 && p.y < 66) {  //refresh button coordiantes
+          p = {};                                              //debounce touchscreen
           display_licks();
         }
       }
@@ -298,29 +311,33 @@ void recording_page()
     //==========================================================================================
 
     if (display_page != "recording") {
-      break; //break the loop if page should be changed
+      break;  //break the loop if page should be changed
     }
 
-    update_sippers(); //update duration of sippers that are in use during data logging
+    if (!SD.begin(chipSelect)) {  //test if SD is working, bring to error page if not
+      display_page = "SDerror";
+      refresh_page = true;
+      break;
+    }
 
-    reset_time_now(); //reset time_now variables to millis()
+    if (log_by_time) {
+      update_sippers();         //update duration of sippers that are in use during data logging
+      reset_time_now();         //reset time_now variables to millis()
+      write_to_file_by_time();  //log data to file
+      calc_total_LN();          //calculate total lick duration for each sipper to be diplayed on screen
+    }
 
-    write_to_file(); //log data to file
-
-    calc_total_LN(); //calculate total lick duration for each sipper to be diplayed on screen
-
-    write_data(); // Now we write data to disk! Don't sync too often - requires 2048 ints of I/O to SD card, which uses a bunch of power and takes time
+    write_data();  // Now we write data to disk! Don't sync too often - requires 2048 ints of I/O to SD card, which uses a bunch of power and takes time
   }
 }
 
 //======================================================================================
 
-void pause_page()
-{
+void pause_page() {
   while (display_page == "pause") {
 
-    display_time(); //show what file was being recorded to (filename), date and time paused, and actual time (refresh every minute)
-    set_brightness(); //set screen brightness depending on light cycle
+    display_time();    //show what file was being recorded to (filename), date and time paused, and actual time (refresh every minute)
+    set_brightness();  //set screen brightness depending on light cycle
 
     if (refresh_page) {
       refresh_page = !refresh_page;
@@ -347,15 +364,18 @@ void pause_page()
       p.x = map(p.x, 0, 240, 0, 240);
       p.y = map(p.y, 0, 320, 0, 320);
 
-      DEBUG_PRINT("(X = "); DEBUG_PRINT(p.x);
-      DEBUG_PRINT(", Y = "); DEBUG_PRINT(p.y);
-      DEBUG_PRINT(", Pressure = "); DEBUG_PRINT(p.z);
+      DEBUG_PRINT("(X = ");
+      DEBUG_PRINT(p.x);
+      DEBUG_PRINT(", Y = ");
+      DEBUG_PRINT(p.y);
+      DEBUG_PRINT(", Pressure = ");
+      DEBUG_PRINT(p.z);
       DEBUG_PRINTLN(")");
 
       tft.setFont(&FreeSans9pt7b);
 
-      if (p.x > 65 && p.x < 175 && p.y > 230 && p.y < 270) { //Resume button coordiantes, Unpause --> mount SD card and continue recording to the same file --> go to recording_page (display_page = "recording")
-        p = {}; //debounce touchscreen
+      if (p.x > 65 && p.x < 175 && p.y > 230 && p.y < 270) {  //Resume button coordiantes, Unpause --> mount SD card and continue recording to the same file --> go to recording_page (display_page = "recording")
+        p = {};                                               //debounce touchscreen
         tft.drawRoundRect(65, 230, 110, 40, 4, ILI9341_GREEN);
         wait(100);
         if (!SD.begin(chipSelect)) {
@@ -367,7 +387,7 @@ void pause_page()
         logfile.println("PAUSED");
         DEBUG_PRINTLN("PAUSED");
         logging_same_file();
-        display_page = "recording"; // go to recording_page
+        display_page = "recording";  // go to recording_page
         refresh_page = true;
       }
     }
@@ -376,8 +396,7 @@ void pause_page()
 
 //======================================================================================
 
-void SD_error_page()
-{
+void SD_error_page() {
   while (display_page == "SDerror") {
 
     display_time();
@@ -389,7 +408,7 @@ void SD_error_page()
       tft.fillRect(0, 20, 240, 320, ILI9341_RED);
       tft.setFont(&FreeSans9pt7b);
       NickText_center(F("SD Card failed or not inserted"), 120, 100, 1);
-      NickText(F("Card failed at:"), 0, 150, 1); //dispaly time that SD failed
+      NickText(F("Card failed at:"), 0, 150, 1);  //dispaly time that SD failed
       tft.println();
       tft.print(now.month());
       tft.print("/");
@@ -412,16 +431,19 @@ void SD_error_page()
       p.x = map(p.x, 0, 240, 0, 240);
       p.y = map(p.y, 0, 320, 0, 320);
 
-      DEBUG_PRINT("(X = "); DEBUG_PRINT(p.x);
-      DEBUG_PRINT(", Y = "); DEBUG_PRINT(p.y);
-      DEBUG_PRINT(", Pressure = "); DEBUG_PRINT(p.z);
+      DEBUG_PRINT("(X = ");
+      DEBUG_PRINT(p.x);
+      DEBUG_PRINT(", Y = ");
+      DEBUG_PRINT(p.y);
+      DEBUG_PRINT(", Pressure = ");
+      DEBUG_PRINT(p.z);
       DEBUG_PRINTLN(")");
 
-      if (p.x > 10 && p.x < 230 && p.y > 220 && p.y < 280) { //Return to Main Menu button coordiantes // fix this
-        p = {}; //debounce touchscreen
+      if (p.x > 10 && p.x < 230 && p.y > 220 && p.y < 280) {  //Return to Main Menu button coordiantes // fix this
+        p = {};                                               //debounce touchscreen
         Button_center(120, 250, 220, 60, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "Return to Main Menu", 1);
         wait(100);
-        display_page = "main"; // go to main_menu_page
+        display_page = "main";  // go to main_menu_page
         refresh_page = true;
       }
     }
@@ -430,8 +452,7 @@ void SD_error_page()
 
 //======================================================================================
 
-void settings_page()
-{
+void settings_page() {
   while (display_page == "settings") {
 
     display_time();
@@ -444,13 +465,22 @@ void settings_page()
       tft.setFont(&FreeSansBold12pt7b);
       NickText_center("Settings", 120, 40, 1);
       tft.setFont(&FreeSans9pt7b);
-      NickText("Date/Time", 10, 85, 1); Button_center(130, 80, 60, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "Edit", 1);
-      NickText("Lights ON Time", 10, 115, 1); Button_center(160, 110, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, lights_on, 1);
-      NickText("Lights OFF Time", 10, 145, 1); Button_center(168, 140, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, lights_off, 1);
-      NickText("Sensor Settings", 10, 175, 1); Button_center(175, 170, 60, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "Edit", 1);
-      NickText("Parameters to Log", 10, 205, 1); Button_center(195, 200, 60, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "Edit", 1);
-      NickText("Time Bin Size", 10, 235, 1); Button_center(145, 230, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, LOG_INTERVAL, 1);
-      NickText("Sync Interval", 10, 265, 1); Button_center(137, 260, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, SYNC_INTERVAL, 1);
+      NickText("Date/Time", 10, 85, 1);
+      Button_center(130, 80, 60, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "Edit", 1);
+      NickText("Lights ON Time", 10, 115, 1);
+      Button_center(160, 110, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, lights_on, 1);
+      NickText("Lights OFF Time", 10, 145, 1);
+      Button_center(168, 140, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, lights_off, 1);
+      NickText("Sensor Settings", 10, 175, 1);
+      Button_center(175, 170, 60, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "Edit", 1);
+      NickText("Parameters to Log", 10, 205, 1);
+      Button_center(195, 200, 60, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "Edit", 1);
+      if (log_by_time) {
+        NickText("Time Bin Size", 10, 235, 1);
+        Button_center(145, 230, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, LOG_INTERVAL, 1);
+      }
+      NickText("Sync Interval", 10, 265, 1);
+      Button_center(137, 260, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, SYNC_INTERVAL, 1);
       Button_center(180, 295, 60, 40, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "Save", 1);
       Button_center(60, 295, 60, 40, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "Reset", 1);
     }
@@ -461,22 +491,24 @@ void settings_page()
       p.x = map(p.x, 0, 240, 0, 240);
       p.y = map(p.y, 0, 320, 0, 320);
 
-      DEBUG_PRINT("(X = "); DEBUG_PRINT(p.x);
-      DEBUG_PRINT(", Y = "); DEBUG_PRINT(p.y);
-      DEBUG_PRINT(", Pressure = "); DEBUG_PRINT(p.z);
+      DEBUG_PRINT("(X = ");
+      DEBUG_PRINT(p.x);
+      DEBUG_PRINT(", Y = ");
+      DEBUG_PRINT(p.y);
+      DEBUG_PRINT(", Pressure = ");
+      DEBUG_PRINT(p.z);
       DEBUG_PRINTLN(")");
 
-      if (p.x > 100 && p.x < 160 && p.y > 67 && p.y < 93) { //Date/Time Edit
-        p = {}; //debounce touchscreen
+      if (p.x > 100 && p.x < 160 && p.y > 67 && p.y < 93) {  //Date/Time Edit
+        p = {};                                              //debounce touchscreen
         Button_center(130, 80, 60, 26, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "Edit", 1);
         wait(100);
         display_page = "settings_datetime";
         refresh_page = true;
         show_time = true;
-
       }
-      if (p.x > 143 && p.x < 178 && p.y > 97 && p.y < 123) { //Lights ON
-        p = {}; //debounce touchscreen
+      if (p.x > 143 && p.x < 178 && p.y > 97 && p.y < 123) {  //Lights ON
+        p = {};                                               //debounce touchscreen
         Button_center(160, 110, 35, 26, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, lights_on, 1);
         wait(100);
         GetNum("Lights ON Hour", lights_on);
@@ -487,8 +519,8 @@ void settings_page()
         refresh_page = true;
         show_time = true;
       }
-      if (p.x > 151 && p.x < 186 && p.y > 127 && p.y < 153) { //Lights OFF
-        p = {}; //debounce touchscreen
+      if (p.x > 151 && p.x < 186 && p.y > 127 && p.y < 153) {  //Lights OFF
+        p = {};                                                //debounce touchscreen
         Button_center(168, 140, 35, 26, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, lights_off, 1);
         wait(100);
         GetNum("Lights OFF Hour", lights_off);
@@ -499,24 +531,24 @@ void settings_page()
         refresh_page = true;
         show_time = true;
       }
-      if (p.x > 145 && p.x < 205 && p.y > 157 && p.y < 183) { //Sensor Settings Edit
-        p = {}; //debounce touchscreen
+      if (p.x > 145 && p.x < 205 && p.y > 157 && p.y < 183) {  //Sensor Settings Edit
+        p = {};                                                //debounce touchscreen
         Button_center(175, 170, 60, 26, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "Edit", 1);
         wait(100);
         display_page = "settings_sensor";
         refresh_page = true;
         show_time = true;
       }
-      if (p.x > 165 && p.x < 225 && p.y > 187 && p.y < 213) { //Parameters to log Edit
-        p = {}; //debounce touchscreen
+      if (p.x > 165 && p.x < 225 && p.y > 187 && p.y < 213) {  //Parameters to log Edit
+        p = {};                                                //debounce touchscreen
         Button_center(195, 200, 60, 26, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "Edit", 1);
         wait(100);
         display_page = "settings_parameters";
         refresh_page = true;
         show_time = true;
       }
-      if (p.x > 128 && p.x < 163 && p.y > 217 && p.y < 243) { //Time bin size
-        p = {}; //debounce touchscreen
+      if (p.x > 128 && p.x < 163 && p.y > 217 && p.y < 243 && log_by_time) {  //Time bin size
+        p = {};                                                //debounce touchscreen
         Button_center(145, 230, 35, 26, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, LOG_INTERVAL, 1);
         wait(100);
         GetNum("Time Bin Size (min)", LOG_INTERVAL);
@@ -527,8 +559,8 @@ void settings_page()
         refresh_page = true;
         show_time = true;
       }
-      if (p.x > 120 && p.x < 155 && p.y > 247 && p.y < 273) { //Sync interval
-        p = {}; //debounce touchscreen
+      if (p.x > 120 && p.x < 155 && p.y > 247 && p.y < 273) {  //Sync interval
+        p = {};                                                //debounce touchscreen
         Button_center(137, 260, 35, 26, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, SYNC_INTERVAL, 1);
         wait(100);
         GetNum("Sync Interval (min)", SYNC_INTERVAL);
@@ -539,16 +571,16 @@ void settings_page()
         refresh_page = true;
         show_time = true;
       }
-      if (p.x > 150 && p.x < 210 && p.y > 275 && p.y < 315) { //Save
-        p = {}; //debounce touchscreen
+      if (p.x > 150 && p.x < 210 && p.y > 275 && p.y < 315) {  //Save
+        p = {};                                                //debounce touchscreen
         Button_center(180, 295, 60, 40, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "Save", 1);
         wait(100);
-        display_page = "main"; // go to main_menu_page
+        display_page = "main";  // go to main_menu_page
         refresh_page = true;
         show_time = true;
       }
-      if (p.x > 30 && p.x < 90 && p.y > 275 && p.y < 315) { //Reset
-        p = {}; //debounce touchscreen
+      if (p.x > 30 && p.x < 90 && p.y > 275 && p.y < 315) {  //Reset
+        p = {};                                              //debounce touchscreen
         Button_center(60, 295, 60, 40, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "Reset", 1);
         wait(100);
         lights_on = default_lights_on;
@@ -572,11 +604,16 @@ void settings_page()
       tft.setFont(&FreeSansBold12pt7b);
       NickText_center("Date/Time Settings", 120, 40, 1);
       tft.setFont(&FreeSans9pt7b);
-      NickText("Month", 10, 85, 1); Button_center(90, 80, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, now.month(), 1);
-      NickText("Day", 10, 115, 1); Button_center(90, 110, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, now.day(), 1);
-      NickText("Year", 10, 145, 1); Button_center(90, 140, 60, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, now.year(), 1);
-      NickText("Hour", 10, 205, 1); Button_center(90, 200, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, now.hour(), 1);
-      NickText("Minute", 10, 235, 1); Button_center(90, 230, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, now.minute(), 1);
+      NickText("Month", 10, 85, 1);
+      Button_center(90, 80, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, now.month(), 1);
+      NickText("Day", 10, 115, 1);
+      Button_center(90, 110, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, now.day(), 1);
+      NickText("Year", 10, 145, 1);
+      Button_center(90, 140, 60, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, now.year(), 1);
+      NickText("Hour", 10, 205, 1);
+      Button_center(90, 200, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, now.hour(), 1);
+      NickText("Minute", 10, 235, 1);
+      Button_center(90, 230, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, now.minute(), 1);
       Button_center(180, 295, 60, 40, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "Save", 1);
     }
 
@@ -586,13 +623,16 @@ void settings_page()
       p.x = map(p.x, 0, 240, 0, 240);
       p.y = map(p.y, 0, 320, 0, 320);
 
-      DEBUG_PRINT("(X = "); DEBUG_PRINT(p.x);
-      DEBUG_PRINT(", Y = "); DEBUG_PRINT(p.y);
-      DEBUG_PRINT(", Pressure = "); DEBUG_PRINT(p.z);
+      DEBUG_PRINT("(X = ");
+      DEBUG_PRINT(p.x);
+      DEBUG_PRINT(", Y = ");
+      DEBUG_PRINT(p.y);
+      DEBUG_PRINT(", Pressure = ");
+      DEBUG_PRINT(p.z);
       DEBUG_PRINTLN(")");
 
-      if (p.x > 73 && p.x < 108 && p.y > 67 && p.y < 93) { //month
-        p = {}; //debounce touchscreen
+      if (p.x > 73 && p.x < 108 && p.y > 67 && p.y < 93) {  //month
+        p = {};                                             //debounce touchscreen
         Button_center(90, 80, 35, 26, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, now.month(), 1);
         wait(100);
         int new_month = now.month();
@@ -605,8 +645,8 @@ void settings_page()
         refresh_page = true;
         show_time = true;
       }
-      if (p.x > 73 && p.x < 108 && p.y > 97 && p.y < 123) { //day
-        p = {}; //debounce touchscreen
+      if (p.x > 73 && p.x < 108 && p.y > 97 && p.y < 123) {  //day
+        p = {};                                              //debounce touchscreen
         Button_center(90, 110, 35, 26, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, now.day(), 1);
         wait(100);
         int new_day = now.day();
@@ -619,8 +659,8 @@ void settings_page()
         refresh_page = true;
         show_time = true;
       }
-      if (p.x > 60 && p.x < 120 && p.y > 127 && p.y < 153) { //year
-        p = {}; //debounce touchscreen
+      if (p.x > 60 && p.x < 120 && p.y > 127 && p.y < 153) {  //year
+        p = {};                                               //debounce touchscreen
         Button_center(90, 140, 60, 26, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, now.year(), 1);
         wait(100);
         int new_year = now.year();
@@ -633,8 +673,8 @@ void settings_page()
         refresh_page = true;
         show_time = true;
       }
-      if (p.x > 73 && p.x < 108 && p.y > 187 && p.y < 213) { //hour
-        p = {}; //debounce touchscreen
+      if (p.x > 73 && p.x < 108 && p.y > 187 && p.y < 213) {  //hour
+        p = {};                                               //debounce touchscreen
         Button_center(90, 200, 35, 26, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, now.hour(), 1);
         wait(100);
         int new_hour = now.hour();
@@ -647,8 +687,8 @@ void settings_page()
         refresh_page = true;
         show_time = true;
       }
-      if (p.x > 73 && p.x < 108 && p.y > 217 && p.y < 243) { //minute
-        p = {}; //debounce touchscreen
+      if (p.x > 73 && p.x < 108 && p.y > 217 && p.y < 243) {  //minute
+        p = {};                                               //debounce touchscreen
         Button_center(90, 230, 35, 26, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, now.minute(), 1);
         wait(100);
         int new_minute = now.minute();
@@ -661,8 +701,8 @@ void settings_page()
         refresh_page = true;
         show_time = true;
       }
-      if (p.x > 150 && p.x < 210 && p.y > 275 && p.y < 315) { //Save
-        p = {}; //debounce touchscreen
+      if (p.x > 150 && p.x < 210 && p.y > 275 && p.y < 315) {  //Save
+        p = {};                                                //debounce touchscreen
         Button_center(180, 295, 60, 40, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "Save", 1);
         wait(100);
         display_page = "settings";
@@ -713,12 +753,67 @@ void settings_page()
       } else {
         logging[5] = "";
       }
-      NickText("Lick Number", 44, 85, 1); tft.setFont(&FreeSansBold12pt7b); Button_center(22, 80, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[0], 1); tft.setFont(&FreeSans9pt7b);
-      NickText("Lick Duration", 44, 115, 1); tft.setFont(&FreeSansBold12pt7b); Button_center(22, 110, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[1], 1); tft.setFont(&FreeSans9pt7b);
-      NickText("Bout Number", 44, 145, 1); tft.setFont(&FreeSansBold12pt7b); Button_center(22, 140, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[2], 1); tft.setFont(&FreeSans9pt7b);
-      NickText("Bout Duration", 44, 175, 1); tft.setFont(&FreeSansBold12pt7b); Button_center(22, 170, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[3], 1); tft.setFont(&FreeSans9pt7b);
-      NickText("Bout Lick Number", 44, 205, 1); tft.setFont(&FreeSansBold12pt7b); Button_center(22, 200, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[4], 1); tft.setFont(&FreeSans9pt7b);
-      NickText("Bout Lick Duration", 44, 235, 1); tft.setFont(&FreeSansBold12pt7b); Button_center(22, 230, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[5], 1); tft.setFont(&FreeSans9pt7b);
+      if (log_by_time) {
+        logging[6] = "X";
+      } else {
+        logging[6] = "";
+      }
+      if (log_by_bout) {
+        logging[7] = "X";
+        tft.setFont();
+        tft.setTextColor(ILI9341_WHITE);
+        NickText_center("'Log Bouts' will save the data for", 120, 60, 1);
+        NickText_center("each individual bout at the time", 120, 70, 1);
+        NickText_center("that they occur.", 120, 80, 1);
+        NickText_center("'Log by Time' will save the data every", 120, 95, 1);
+        NickText_center("'x' number of minutes.", 120, 105, 1);
+      } else {
+        logging[7] = "";
+      }
+
+      if (log_by_time) {
+        tft.setFont(&FreeSans9pt7b);
+        NickText("Lick Number", 44, 85, 1);
+        tft.setFont(&FreeSansBold12pt7b);
+        Button_center(22, 80, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[0], 1);
+
+        tft.setFont(&FreeSans9pt7b);
+        NickText("Lick Duration", 44, 115, 1);
+        tft.setFont(&FreeSansBold12pt7b);
+        Button_center(22, 110, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[1], 1);
+      }
+
+      tft.setFont(&FreeSans9pt7b);
+      NickText("Bout Number", 44, 145, 1);
+      tft.setFont(&FreeSansBold12pt7b);
+      Button_center(22, 140, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[2], 1);
+
+      tft.setFont(&FreeSans9pt7b);
+      NickText("Bout Duration", 44, 175, 1);
+      tft.setFont(&FreeSansBold12pt7b);
+      Button_center(22, 170, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[3], 1);
+
+      tft.setFont(&FreeSans9pt7b);
+      NickText("Bout Lick Number", 44, 205, 1);
+      tft.setFont(&FreeSansBold12pt7b);
+      Button_center(22, 200, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[4], 1);
+
+      tft.setFont(&FreeSans9pt7b);
+      NickText("Bout Lick Duration", 44, 235, 1);
+      tft.setFont(&FreeSansBold12pt7b);
+      Button_center(22, 230, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[5], 1);
+
+      tft.setFont(&FreeSans9pt7b);
+      NickText("Log byTime", 29, 265, 1);
+      tft.setFont(&FreeSansBold12pt7b);
+      Button_center(14, 260, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[6], 1);
+
+      tft.setFont(&FreeSans9pt7b);
+      NickText("Log Bouts", 155, 265, 1);
+      tft.setFont(&FreeSansBold12pt7b);
+      Button_center(140, 260, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[7], 1);
+
+      tft.setFont(&FreeSans9pt7b);
       Button_center(180, 295, 60, 40, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "Save", 1);
       Button_center(60, 295, 60, 40, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "Reset", 1);
     }
@@ -729,37 +824,44 @@ void settings_page()
       p.x = map(p.x, 0, 240, 0, 240);
       p.y = map(p.y, 0, 320, 0, 320);
 
-      DEBUG_PRINT("(X = "); DEBUG_PRINT(p.x);
-      DEBUG_PRINT(", Y = "); DEBUG_PRINT(p.y);
-      DEBUG_PRINT(", Pressure = "); DEBUG_PRINT(p.z);
+      DEBUG_PRINT("(X = ");
+      DEBUG_PRINT(p.x);
+      DEBUG_PRINT(", Y = ");
+      DEBUG_PRINT(p.y);
+      DEBUG_PRINT(", Pressure = ");
+      DEBUG_PRINT(p.z);
       DEBUG_PRINTLN(")");
 
-      if (p.x < 190 && p.y > 68 && p.y < 92) { //LN
-        p = {}; //debounce touchscreen
-        log_LN = !log_LN;
-        if (log_LN) {
-          logging[0] = "X";
-        } else {
-          logging[0] = "";
+      if (log_by_time) {
+        if (p.x < 190 && p.y > 68 && p.y < 92) {  //LN
+          p = {};                                 //debounce touchscreen
+          log_LN = !log_LN;
+          if (log_LN) {
+            logging[0] = "X";
+          } else {
+            logging[0] = "";
+          }
+          tft.setFont(&FreeSansBold12pt7b);
+          Button_center(22, 80, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[0], 1);
+          wait(100);
         }
-        tft.setFont(&FreeSansBold12pt7b);
-        Button_center(22, 80, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[0], 1);
-        wait(100);
-      }
-      if (p.x < 190 && p.y > 98 && p.y < 122) { //LD
-        p = {}; //debounce touchscreen
-        log_LD = !log_LD;
-        if (log_LD) {
-          logging[1] = "X";
-        } else {
-          logging[1] = "";
+
+        if (p.x < 190 && p.y > 98 && p.y < 122) {  //LD
+          p = {};                                  //debounce touchscreen
+          log_LD = !log_LD;
+          if (log_LD) {
+            logging[1] = "X";
+          } else {
+            logging[1] = "";
+          }
+          tft.setFont(&FreeSansBold12pt7b);
+          Button_center(22, 110, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[1], 1);
+          wait(100);
         }
-        tft.setFont(&FreeSansBold12pt7b);
-        Button_center(22, 110, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[1], 1);
-        wait(100);
       }
-      if (p.x < 190 && p.y > 128 && p.y < 152) { //BN
-        p = {}; //debounce touchscreen
+
+      if (p.x < 190 && p.y > 128 && p.y < 152) {  //BN
+        p = {};                                   //debounce touchscreen
         log_BN = !log_BN;
         if (log_BN) {
           logging[2] = "X";
@@ -770,8 +872,9 @@ void settings_page()
         Button_center(22, 140, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[2], 1);
         wait(100);
       }
-      if (p.x < 190 && p.y > 158 && p.y < 182) { //BD
-        p = {}; //debounce touchscreen
+
+      if (p.x < 190 && p.y > 158 && p.y < 182) {  //BD
+        p = {};                                   //debounce touchscreen
         log_BD = !log_BD;
         if (log_BD) {
           logging[3] = "X";
@@ -782,8 +885,9 @@ void settings_page()
         Button_center(22, 170, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[3], 1);
         wait(100);
       }
-      if (p.x < 190 && p.y > 188 && p.y < 212) { //BLN
-        p = {}; //debounce touchscreen
+
+      if (p.x < 190 && p.y > 188 && p.y < 212) {  //BLN
+        p = {};                                   //debounce touchscreen
         log_BLN = !log_BLN;
         if (log_BLN) {
           logging[4] = "X";
@@ -794,8 +898,9 @@ void settings_page()
         Button_center(22, 200, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[4], 1);
         wait(100);
       }
-      if (p.x < 190 && p.y > 218 && p.y < 242) { //BLD
-        p = {}; //debounce touchscreen
+
+      if (p.x < 190 && p.y > 218 && p.y < 242) {  //BLD
+        p = {};                                   //debounce touchscreen
         log_BLD = !log_BLD;
         if (log_BLD) {
           logging[5] = "X";
@@ -806,16 +911,49 @@ void settings_page()
         Button_center(22, 230, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[5], 1);
         wait(100);
       }
-      if (p.x > 150 && p.x < 210 && p.y > 275 && p.y < 315) { //Save
-        p = {}; //debounce touchscreen
+
+      if (p.x < 100 && p.y > 248 && p.y < 272) {  //BLD
+        p = {};                                   //debounce touchscreen
+        log_by_time = !log_by_time;
+        refresh_page = true;
+        if (log_by_time) {
+          log_by_bout = false;
+          logging[6] = "X";
+        } else {
+          log_by_bout = true;
+          logging[6] = "";
+        }
+        tft.setFont(&FreeSansBold12pt7b);
+        Button_center(14, 260, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[6], 1);
+        wait(100);
+      }
+      if (p.x > 108 && p.x < 190 && p.y > 248 && p.y < 272) {  //BLD
+        p = {};                                                //debounce touchscreen
+        log_by_bout = !log_by_bout;
+        refresh_page = true;
+        if (log_by_bout) {
+          log_by_time = false;
+          logging[7] = "X";
+        } else {
+          log_by_time = true;
+          logging[7] = "";
+        }
+        tft.setFont(&FreeSansBold12pt7b);
+        Button_center(140, 260, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, logging[7], 1);
+        wait(100);
+      }
+
+      if (p.x > 150 && p.x < 210 && p.y > 275 && p.y < 315) {  //Save
+        p = {};                                                //debounce touchscreen
         tft.setFont(&FreeSans9pt7b);
         Button_center(180, 295, 60, 40, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "Save", 1);
         wait(100);
         display_page = "settings";
         refresh_page = true;
       }
-      if (p.x > 30 && p.x < 90 && p.y > 275 && p.y < 315) { //Reset
-        p = {}; //debounce touchscreen
+
+      if (p.x > 30 && p.x < 90 && p.y > 275 && p.y < 315) {  //Reset
+        p = {};                                              //debounce touchscreen
         tft.setFont(&FreeSans9pt7b);
         Button_center(60, 295, 60, 40, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "Reset", 1);
         wait(100);
@@ -846,12 +984,19 @@ void settings_page()
         X = "";
       }
       tft.setFont(&FreeSans9pt7b);
-      NickText("Touch Threshold", 10, 85, 1); Button_center(170, 80, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, touch_threshold, 1);
-      NickText("Release Threshold", 10, 115, 1); Button_center(185, 110, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, release_threshold, 1);
-      NickText("Auto Calibrate?", 10, 145, 1); tft.setFont(&FreeSansBold12pt7b); Button_center(150, 140, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, X, 1);  tft.setFont(&FreeSans9pt7b);
+      NickText("Touch Threshold", 10, 85, 1);
+      Button_center(170, 80, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, touch_threshold, 1);
+      NickText("Release Threshold", 10, 115, 1);
+      Button_center(185, 110, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, release_threshold, 1);
+      NickText("Auto Calibrate?", 10, 145, 1);
+      tft.setFont(&FreeSansBold12pt7b);
+      Button_center(150, 140, 24, 24, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, X, 1);
+      tft.setFont(&FreeSans9pt7b);
       if (auto_cal) {
-        NickText("Time (24hr)", 30, 175, 1); Button_center(150, 170, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, auto_cal_time, 1);
-        NickText("Time since last lick (sec) ", 30, 205, 1); Button_center(120, 225, 40, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, auto_cal_sec_since_last_lick, 1);
+        NickText("Time (24hr)", 30, 175, 1);
+        Button_center(150, 170, 35, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, auto_cal_time, 1);
+        NickText("Time since last lick (sec) ", 30, 205, 1);
+        Button_center(120, 225, 40, 26, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, auto_cal_sec_since_last_lick, 1);
         tft.setFont();
         NickText_center("Sensors will only auto calibrate once", 120, 240, 1);
         NickText_center("at the specified hour and if no licks", 120, 250, 1);
@@ -868,13 +1013,16 @@ void settings_page()
       p.x = map(p.x, 0, 240, 0, 240);
       p.y = map(p.y, 0, 320, 0, 320);
 
-      DEBUG_PRINT("(X = "); DEBUG_PRINT(p.x);
-      DEBUG_PRINT(", Y = "); DEBUG_PRINT(p.y);
-      DEBUG_PRINT(", Pressure = "); DEBUG_PRINT(p.z);
+      DEBUG_PRINT("(X = ");
+      DEBUG_PRINT(p.x);
+      DEBUG_PRINT(", Y = ");
+      DEBUG_PRINT(p.y);
+      DEBUG_PRINT(", Pressure = ");
+      DEBUG_PRINT(p.z);
       DEBUG_PRINTLN(")");
 
-      if (p.x > 153 && p.x < 188 && p.y > 67 && p.y < 93) { //touch threshold
-        p = {}; //debounce touchscreen
+      if (p.x > 153 && p.x < 188 && p.y > 67 && p.y < 93) {  //touch threshold
+        p = {};                                              //debounce touchscreen
         tft.setFont(&FreeSans9pt7b);
         Button_center(170, 80, 35, 26, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, touch_threshold, 1);
         wait(100);
@@ -887,8 +1035,8 @@ void settings_page()
         show_time = true;
       }
 
-      if (p.x > 168 && p.x < 203 && p.y > 97 && p.y < 123) { //release threshold
-        p = {}; //debounce touchscreen
+      if (p.x > 168 && p.x < 203 && p.y > 97 && p.y < 123) {  //release threshold
+        p = {};                                               //debounce touchscreen
         tft.setFont(&FreeSans9pt7b);
         Button_center(185, 110, 35, 26, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, release_threshold, 1);
         wait(100);
@@ -900,15 +1048,15 @@ void settings_page()
         refresh_page = true;
         show_time = true;
       }
-      if (p.x > 138 && p.x < 162 && p.y > 128 && p.y < 152) { //auto calibrate?
-        p = {}; //debounce touchscreen
+      if (p.x > 138 && p.x < 162 && p.y > 128 && p.y < 152) {  //auto calibrate?
+        p = {};                                                //debounce touchscreen
         auto_cal = !auto_cal;
         wait(100);
         refresh_page = true;
         show_time = true;
       }
-      if (p.x > 133 && p.x < 168 && p.y > 157 && p.y < 183 && auto_cal) { //Time to cal
-        p = {}; //debounce touchscreen
+      if (p.x > 133 && p.x < 168 && p.y > 157 && p.y < 183 && auto_cal) {  //Time to cal
+        p = {};                                                            //debounce touchscreen
         tft.setFont(&FreeSans9pt7b);
         Button_center(150, 170, 35, 26, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, auto_cal_time, 1);
         wait(100);
@@ -920,8 +1068,8 @@ void settings_page()
         refresh_page = true;
         show_time = true;
       }
-      if (p.x > 85 && p.x < 155 && p.y > 217 && p.y < 243 && auto_cal) { //time since last cal
-        p = {}; //debounce touchscreen
+      if (p.x > 85 && p.x < 155 && p.y > 217 && p.y < 243 && auto_cal) {  //time since last cal
+        p = {};                                                           //debounce touchscreen
         tft.setFont(&FreeSans9pt7b);
         Button_center(120, 225, 40, 26, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, auto_cal_sec_since_last_lick, 1);
         wait(100);
@@ -930,8 +1078,8 @@ void settings_page()
         refresh_page = true;
         show_time = true;
       }
-      if (p.x > 150 && p.x < 210 && p.y > 275 && p.y < 315) { //Save
-        p = {}; //debounce touchscreen
+      if (p.x > 150 && p.x < 210 && p.y > 275 && p.y < 315) {  //Save
+        p = {};                                                //debounce touchscreen
         tft.setFont(&FreeSans9pt7b);
         Button_center(180, 295, 60, 40, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "Save", 1);
         wait(100);
@@ -940,13 +1088,13 @@ void settings_page()
         show_time = true;
         break;
       }
-      if (p.x > 30 && p.x < 90 && p.y > 275 && p.y < 315) { //Reset
-        p = {}; //debounce touchscreen
+      if (p.x > 30 && p.x < 90 && p.y > 275 && p.y < 315) {  //Reset
+        p = {};                                              //debounce touchscreen
         tft.setFont(&FreeSans9pt7b);
         Button_center(60, 295, 60, 40, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "Reset", 1);
         wait(100);
-        default_touch_threshold = touch_threshold;
-        default_release_threshold = release_threshold;
+        touch_threshold = default_touch_threshold;
+        release_threshold = default_release_threshold;
         auto_cal = default_auto_cal;
         auto_cal_time = default_auto_cal_time;
         auto_cal_sec_since_last_lick = default_auto_cal_sec_since_last_lick;
@@ -959,8 +1107,7 @@ void settings_page()
 
 //======================================================================================
 
-void error_page()
-{
+void error_page() {
   while (display_page == "error") {
 
     display_time();
@@ -976,16 +1123,19 @@ void error_page()
       p.x = map(p.x, 0, 240, 0, 240);
       p.y = map(p.y, 0, 320, 0, 320);
 
-      DEBUG_PRINT("(X = "); DEBUG_PRINT(p.x);
-      DEBUG_PRINT(", Y = "); DEBUG_PRINT(p.y);
-      DEBUG_PRINT(", Pressure = "); DEBUG_PRINT(p.z);
+      DEBUG_PRINT("(X = ");
+      DEBUG_PRINT(p.x);
+      DEBUG_PRINT(", Y = ");
+      DEBUG_PRINT(p.y);
+      DEBUG_PRINT(", Pressure = ");
+      DEBUG_PRINT(p.z);
       DEBUG_PRINTLN(")");
 
-      if (p.x > 10 && p.x < 230 && p.y > 190 && p.y < 250) { //Return to Main Menu button coordiantes // fix this
-        p = {}; //debounce touchscreen
+      if (p.x > 10 && p.x < 230 && p.y > 190 && p.y < 250) {  //Return to Main Menu button coordiantes // fix this
+        p = {};                                               //debounce touchscreen
         Button_center(120, 250, 220, 60, ILI9341_BLACK, ILI9341_GREEN, ILI9341_WHITE, "Return to Main Menu", 1);
         wait(100);
-        display_page = "main"; // go to main_menu_page
+        display_page = "main";  // go to main_menu_page
         refresh_page = true;
       }
     }
