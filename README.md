@@ -1,5 +1,25 @@
 # LIQ HD - Lick Instance Quantifier Home cage Device 
 
+## UPDATE: 1/19/2024
+
+We have now included the ability to log the lick data by individual bouts! With this setting turned on, each individual bout will be logged with a line in the file with the side the experimental bottle is on (LEFT or RIGHT), a time stamp, the cage number, which bottle was licked (LEFT or RIGHT), bout lick number, bout lick duration, average lick frequency of that bout, and average inter-lick interval of that bout. Note, this setting will not log the total lick number and lick duration (i.e. licks that do not meet bout criteria).
+
+The "log by bout" setting can be turned on using the GUI under "Parameters to log". This setting can be made the default by changing the Arduino code lines 186-187. For example:
+
+bool log_by_bout = true; 
+bool log_by_time = false;
+//will set the default to "log by bout".
+
+bool log_by_bout = false; 
+bool log_by_time = true;
+//will set the default to "log by time" (original logging method).
+
+We have also made it easier to change the bout cutoff time (the amount of time an animal has to lick 3 times to start the bout) by changing the "bout_cutoff" variable on line 185.
+
+We made some minor changes to the capacitive sensor settings that optimizes the baseline tracking for more consistent lick detection.
+
+------------------------------------------------------------------
+
 ## Included in this repository:
   - Arduino code for LIQ HD running off an Arduino Mega
   - Arduino code for LIQ HD running off an Adafruit Grand Central (significantly faster processor speed. NOT FULLY TESTED.)
