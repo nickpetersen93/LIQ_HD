@@ -1,6 +1,6 @@
 # LIQ HD - Lick Instance Quantifier Home cage Device 
 
-## UPDATE: 1/19/2024
+## UPDATE: 1/19/2024 (Arduino Mega version only)
 
 We have now included the ability to log the lick data by individual bouts! With this setting turned on, each individual bout will be logged with a line in the file with the side the experimental bottle is on (LEFT or RIGHT), a time stamp, the cage number, which bottle was licked (LEFT or RIGHT), bout lick number, bout lick duration, average lick frequency of that bout, and average inter-lick interval of that bout. Note, this setting will not log the total lick number and lick duration (i.e. licks that do not meet bout criteria).
 
