@@ -1,21 +1,22 @@
 
 //==========================================================================================
 
-void start_display()
-{
+void start_display() {
   tft.begin();
   if (!ts.begin()) {
     DEBUG_PRINTLN("Couldn't start touchscreen controller");
-    while (1);
+    while (1)
+      ;
   }
+  tft.setRotation(2);
+  show_time = true;
   DEBUG_PRINTLN("Touchscreen started");
 }
 
 //==========================================================================================
 
-void WelcomeScreen() //work on this with new name and logo design
+void WelcomeScreen()  //work on this with new name and logo design
 {
-  tft.setRotation(2);
   tft.fillScreen(ILI9341_BLACK);
   drawBitmap(0, 60, welcome_logo, 240, 173, ILI9341_WHITE);
   wait(2000);
@@ -23,8 +24,7 @@ void WelcomeScreen() //work on this with new name and logo design
 
 //==========================================================================================
 
-void set_brightness()
-{
+void set_brightness() {
   // fetch the time
   hour_now = now.hour();
 
@@ -33,7 +33,7 @@ void set_brightness()
       analogWrite(5, 255);
     }
     if (hour_now < lights_on || hour_now >= lights_off) {
-      analogWrite(5, 10);
+      analogWrite(5, 1);
     }
   }
 
@@ -42,15 +42,14 @@ void set_brightness()
       analogWrite(5, 255);
     }
     if (hour_now < lights_on && hour_now >= lights_off) {
-      analogWrite(5, 10);
+      analogWrite(5, 1);
     }
   }
 }
 
 //======================================================================================
 
-void NickText(String text, int x, int y, int size)
-{
+void NickText(String text, int x, int y, int size) {
   tft.setTextSize(size);
   tft.setCursor(x, y);
   tft.print(text);
@@ -58,8 +57,7 @@ void NickText(String text, int x, int y, int size)
 
 //======================================================================================
 
-void NickText(int w, int x, int y, int size)
-{
+void NickText(int w, int x, int y, int size) {
   tft.setTextSize(size);
   tft.setCursor(x, y);
   tft.print(w);
@@ -67,10 +65,12 @@ void NickText(int w, int x, int y, int size)
 
 //======================================================================================
 
-void NickText_center(String text, int center_x, int center_y, int size)
-{
+void NickText_center(String text, int center_x, int center_y, int size) {
   tft.setTextSize(size);
-  int16_t x1; int16_t y1; uint16_t w; uint16_t h;
+  int16_t x1;
+  int16_t y1;
+  uint16_t w;
+  uint16_t h;
   tft.getTextBounds(text, 0, 320, &x1, &y1, &w, &h);
   int xx = (center_x - 1) - (w / 2);
   int yy = (center_y - 1) + (h / 2);
@@ -81,10 +81,12 @@ void NickText_center(String text, int center_x, int center_y, int size)
 
 //======================================================================================
 
-void NickText_center(int variable, int center_x, int center_y, int size)
-{
+void NickText_center(int variable, int center_x, int center_y, int size) {
   tft.setTextSize(size);
-  int16_t x1; int16_t y1; uint16_t w; uint16_t h;
+  int16_t x1;
+  int16_t y1;
+  uint16_t w;
+  uint16_t h;
   String text = String(variable);
   tft.getTextBounds(text, 0, 320, &x1, &y1, &w, &h);
   int xx = (center_x - 1) - (w / 2);
@@ -95,13 +97,15 @@ void NickText_center(int variable, int center_x, int center_y, int size)
 
 //==========================================================================================
 
-void Button_center(int center_x, int center_y, int sizeX, int sizeY, uint16_t button_color, uint16_t border_color, uint16_t text_color, String text, int textsize)
-{
+void Button_center(int center_x, int center_y, int sizeX, int sizeY, uint16_t button_color, uint16_t border_color, uint16_t text_color, String text, int textsize) {
   int16_t x = center_x - (sizeX / 2);
   int16_t y = center_y - (sizeY / 2);
   tft.fillRoundRect(x, y, sizeX, sizeY, 4, button_color);
   tft.drawRoundRect(x, y, sizeX, sizeY, 4, border_color);
-  int16_t x1; int16_t y1; uint16_t w; uint16_t h;
+  int16_t x1;
+  int16_t y1;
+  uint16_t w;
+  uint16_t h;
   tft.getTextBounds(text, 0, 320, &x1, &y1, &w, &h);
   int xx = (center_x - 1) - (w / 2);
   int yy = (center_y - 1) + (h / 2);
@@ -110,7 +114,10 @@ void Button_center(int center_x, int center_y, int sizeX, int sizeY, uint16_t bu
   tft.setCursor(xx, yy);
   tft.print(text);
 
-  int x_min; int x_max; int y_min; int y_max;
+  int x_min;
+  int x_max;
+  int y_min;
+  int y_max;
   x_min = x;
   x_max = x + sizeX;
   y_min = y;
@@ -130,13 +137,15 @@ void Button_center(int center_x, int center_y, int sizeX, int sizeY, uint16_t bu
 
 //==========================================================================================
 
-void Button_center(int center_x, int center_y, int sizeX, int sizeY, uint16_t button_color, uint16_t border_color, uint16_t text_color, int text, int textsize)
-{
+void Button_center(int center_x, int center_y, int sizeX, int sizeY, uint16_t button_color, uint16_t border_color, uint16_t text_color, int text, int textsize) {
   int16_t x = center_x - (sizeX / 2);
   int16_t y = center_y - (sizeY / 2);
   tft.fillRoundRect(x, y, sizeX, sizeY, 4, button_color);
   tft.drawRoundRect(x, y, sizeX, sizeY, 4, border_color);
-  int16_t x1; int16_t y1; uint16_t w; uint16_t h;
+  int16_t x1;
+  int16_t y1;
+  uint16_t w;
+  uint16_t h;
   tft.getTextBounds(String(text), 0, 320, &x1, &y1, &w, &h);
   int xx = (center_x - 1) - (w / 2);
   int yy = (center_y - 1) + (h / 2);
@@ -145,7 +154,10 @@ void Button_center(int center_x, int center_y, int sizeX, int sizeY, uint16_t bu
   tft.setCursor(xx, yy);
   tft.print(text);
 
-  int x_min; int x_max; int y_min; int y_max;
+  int x_min;
+  int x_max;
+  int y_min;
+  int y_max;
   x_min = x;
   x_max = x + sizeX;
   y_min = y;
@@ -165,16 +177,14 @@ void Button_center(int center_x, int center_y, int sizeX, int sizeY, uint16_t bu
 
 //==========================================================================================
 
-void Button(int x, int y, int sizeX, int sizeY, int rad, uint16_t color)
-{
+void Button(int x, int y, int sizeX, int sizeY, int rad, uint16_t color) {
   tft.fillRoundRect(x, y, sizeX, sizeY, rad, color);
   tft.drawRoundRect(x, y, sizeX, sizeY, rad, ILI9341_BLACK);
 }
 
 //======================================================================================
 
-void error(String str)
-{
+void error(String str) {
   show_time = true;
   display_time();
   tft.fillRect(0, 20, 240, 320, ILI9341_RED);
@@ -191,14 +201,13 @@ void error(String str)
 
 //======================================================================================
 
-void display_licks()
-{
+void display_licks() {
   tft.setFont(&FreeSans9pt7b);
   tft.fillRect(0, 20, 240, 222, ILI9341_RED);
   NickText_center("Total lick number", 100, 32, 1);
   NickText_center("for each cage (L-R)", 105, 51, 1);
   tft.setFont();
-  Button_center(215, 56, 45, 20, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "", 1); //refresh button
+  Button_center(215, 56, 45, 20, ILI9341_BLACK, ILI9341_BLACK, ILI9341_WHITE, "", 1);  //refresh button
   NickText_center("Refresh", 217, 49, 1);
 
   int spacing = 20;
@@ -330,8 +339,7 @@ void display_licks()
 
 //==========================================================================================
 
-void display_time()
-{
+void display_time() {
   if (show_time) {
     show_time = false;
 
@@ -371,7 +379,7 @@ void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t 
   for (j = 0; j < h; j++) {
     for (i = 0; i < w; i++) {
       if (i & 7) byte <<= 1;
-      else      byte   = pgm_read_byte(bitmap + j * byteWidth + i / 8);
+      else byte = pgm_read_byte(bitmap + j * byteWidth + i / 8);
       if (byte & 0x80) tft.drawPixel(x + i, y + j, color);
     }
   }
@@ -383,21 +391,22 @@ void GetNum(String prompt, int &Number) {
   // print a numeric keyboard and a prompt message
   // and get a numeric integer
   tft.fillScreen(ILI9341_RED);
-  draw_BoxNButtons();// draw the virtual keyboard
+  draw_BoxNButtons();  // draw the virtual keyboard
   tft.setCursor(10, 35);
   tft.setTextSize(1);
   tft.setTextColor(ILI9341_WHITE);
   tft.setFont(&FreeSansBold12pt7b);
-  tft.println(prompt); //print prompt
+  tft.println(prompt);  //print prompt
   tft.setFont(&FreeSansBold24pt7b);
   tft.setCursor(10, 110);
   tft.setTextSize(1);
   tft.setTextColor(ILI9341_WHITE);
-  tft.println(Number); //update new value
+  tft.println(Number);  //update new value
 
-  while (!ok) { // repeat until ok is presse
+  while (!ok) {  // repeat until ok is presse
     if (ts.touched()) {
-      TS_Point p = ts.getPoint(); wait(100);
+      TS_Point p = ts.getPoint();
+      wait(100);
       p.x = map(p.x, 0, 240, 0, 240);
       p.y = map(p.y, 0, 320, 0, 320);
 
@@ -458,7 +467,7 @@ void GetNum(String prompt, int &Number) {
       tft.setCursor(10, 110);
       tft.setTextSize(1);
       tft.setTextColor(ILI9341_WHITE);
-      tft.println(Number); //update new value
+      tft.println(Number);  //update new value
     }
   }
 }
@@ -494,7 +503,7 @@ void draw_BoxNButtons() {
   for (int j = 0; j < 3; j++) {
     for (int i = 0; i < 4; i++) {
       if (j == 2 && i == 3) {
-        tft.setTextColor(ILI9341_BLACK);// ok is more visible
+        tft.setTextColor(ILI9341_BLACK);  // ok is more visible
         tft.setCursor(5 + (60 * i), 183 + (60 * j));
         tft.println(symbol[j][i]);
         return;
