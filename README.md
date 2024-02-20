@@ -14,7 +14,7 @@ bool log_by_bout = false;
 bool log_by_time = true;
 //will set the default to "log by time" (original logging method).
 
-We have also made it easier to change the bout cutoff time (the amount of time during a drinking bout where an animal stops licking before the bout is considewred over) by changing the "bout_cutoff" variable on line 185.
+We have also made it easier to change the bout cutoff time (the amount of time during a drinking bout where an animal stops licking before the bout is considered over) by changing the "bout_cutoff" variable on line 185.
 
 We made some minor changes to the capacitive sensor settings that optimizes the baseline tracking for more consistent lick detection.
 
