@@ -302,7 +302,7 @@ void write_to_file_by_time() {
   if (log_BLD) {
     for (int k = 0; k < 36; k++) {  //write data to file for each sipper
       logfile.print(F(", "));
-      logfile.print(BoutLickDuration[k]);
+      logfile.print(BoutLickDuration_bytime[k]);
     }
   }
 
@@ -364,7 +364,7 @@ void write_to_file_by_time() {
   if (log_BLD) {
     for (int k = 0; k < 36; k++) {
       DEBUG_PRINT(F(", "));
-      DEBUG_PRINT(BoutLickDuration[k]);
+      DEBUG_PRINT(BoutLickDuration_bytime[k]);
     }
   }
   DEBUG_PRINTLN();
