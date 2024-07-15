@@ -19,6 +19,7 @@ void reset_variables() {
     BoutDuration[k] = 0;
     BoutLickNumber[k] = 0;
     BoutLickDuration[k] = 0;
+    BoutLickDuration_bytime[k] = 0;
   }
 }
 
@@ -40,6 +41,7 @@ void Record_Licks() {
       }
       if (lick_bout_countdown[k] == 3 && millis() - bout_start_timer[k] <= 1000) {
         BoutNumber[k] += 1;
+        BoutLickNumber[k] += 2;  //add licks missed before bout started
         bout_timer[k] = millis();
         in_bout[k] = true;
         DEBUG_PRINT(k);
@@ -57,6 +59,12 @@ void Record_Licks() {
       Elapsedtime[k] = millis() - time_now[k];
       LickDuration[k] = LickDuration[k] + Elapsedtime[k];
       BoutLickDuration[k] = BoutLickDuration[k] + Elapsedtime[k];
+      if (in_bout[k] && lick_bout_countdown[k] == 3) {
+        BoutLickDuration_bytime[k] = BoutLickDuration[k];
+      }
+      if (in_bout[k] && lick_bout_countdown[k] != 3) {
+        BoutLickDuration_bytime[k] = BoutLickDuration_bytime[k] + Elapsedtime[k];
+      }
       licking[k] = false;
       DEBUG_PRINTLN(LickNumber[k]);
       DEBUG_PRINTLN(LickDuration[k]);
@@ -80,6 +88,7 @@ void Record_Licks() {
       }
       if (lick_bout_countdown[k] == 3 && millis() - bout_start_timer[k] <= 1000) {
         BoutNumber[k] += 1;
+        BoutLickNumber[k] += 2;  //add licks missed before bout started
         bout_timer[k] = millis();
         in_bout[k] = true;
         DEBUG_PRINT(k);
@@ -97,6 +106,12 @@ void Record_Licks() {
       Elapsedtime[k] = millis() - time_now[k];
       LickDuration[k] = LickDuration[k] + Elapsedtime[k];
       BoutLickDuration[k] = BoutLickDuration[k] + Elapsedtime[k];
+      if (in_bout[k] && lick_bout_countdown[k] == 3) {
+        BoutLickDuration_bytime[k] = BoutLickDuration[k];
+      }
+      if (in_bout[k] && lick_bout_countdown[k] != 3) {
+        BoutLickDuration_bytime[k] = BoutLickDuration_bytime[k] + Elapsedtime[k];
+      }
       licking[k] = false;
       DEBUG_PRINTLN(LickNumber[k]);
       DEBUG_PRINTLN(LickDuration[k]);
@@ -120,6 +135,7 @@ void Record_Licks() {
       }
       if (lick_bout_countdown[k] == 3 && millis() - bout_start_timer[k] <= 1000) {
         BoutNumber[k] += 1;
+        BoutLickNumber[k] += 2;  //add licks missed before bout started
         bout_timer[k] = millis();
         in_bout[k] = true;
         DEBUG_PRINT(k);
@@ -133,10 +149,16 @@ void Record_Licks() {
     if (!(currtouched3 & _BV(s)) && licking[k]) {
       DEBUG_PRINT(k);
       DEBUG_PRINTLN(" released");
+      last_lick_time[k] = millis();
       Elapsedtime[k] = millis() - time_now[k];
       LickDuration[k] = LickDuration[k] + Elapsedtime[k];
       BoutLickDuration[k] = BoutLickDuration[k] + Elapsedtime[k];
-      last_lick_time[k] = millis();
+      if (in_bout[k] && lick_bout_countdown[k] == 3) {
+        BoutLickDuration_bytime[k] = BoutLickDuration[k];
+      }
+      if (in_bout[k] && lick_bout_countdown[k] != 3) {
+        BoutLickDuration_bytime[k] = BoutLickDuration_bytime[k] + Elapsedtime[k];
+      }
       licking[k] = false;
       DEBUG_PRINTLN(LickNumber[k]);
       DEBUG_PRINTLN(LickDuration[k]);
@@ -157,7 +179,6 @@ void Record_Licks() {
       DEBUG_PRINT(k);
       DEBUG_PRINTLN(" bout ended!");
       in_bout[k] = false;
-      BoutLickNumber[k] += 2;  //add licks missed before bout started
       if (log_by_bout) {
         BoutDuration[k] = last_lick_time[k] - bout_start_timer[k];
         LickFrequency[k] = float(BoutLickNumber[k]) / (float(BoutDuration[k]) / 1000);
@@ -184,10 +205,13 @@ void update_sippers() {
     if (licking[k]) {
       Elapsedtime[k] = millis() - time_now[k];
       LickDuration[k] = LickDuration[k] + Elapsedtime[k];
+      if (in_bout[k]) {
+        BoutLickDuration[k] = BoutLickDuration[k] + Elapsedtime[k];
+        BoutLickDuration_bytime[k] = BoutLickDuration_bytime[k] + Elapsedtime[k];
+      }
     }
     if (in_bout[k]) {
       BoutDuration[k] = BoutDuration[k] + (millis() - bout_start_timer[k]);
-      BoutLickDuration[k] = BoutLickDuration[k] + Elapsedtime[k];
     }
   }
 }
@@ -198,7 +222,9 @@ void update_sippers() {
 void reset_time_now() {
   for (int k = 0; k < 36; k++) {
     time_now[k] = millis();  //reset time now
-    bout_start_timer[k] = millis();
+    if (in_bout[k]) {
+      bout_start_timer[k] = last_lick_time[k];
+    }
   }
 }
 
