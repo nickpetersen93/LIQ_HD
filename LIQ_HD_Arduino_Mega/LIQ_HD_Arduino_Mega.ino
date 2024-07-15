@@ -155,6 +155,7 @@ unsigned long BoutNumber[36];
 unsigned long BoutDuration[36];
 unsigned long BoutLickNumber[36];
 unsigned long BoutLickDuration[36];
+unsigned long BoutLickDuration_bytime[36];
 float LickFrequency[36];
 float ILI[36];
 unsigned long Elapsedtime[36];
